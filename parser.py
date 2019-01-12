@@ -42,7 +42,7 @@ def assign_stmt():
         ((name, _), exp) = parsed
         return AssignStatement(name, exp)
 
-    return id + keyword(':=') + (bexp() | aexp() | if_stmt()) ^ process
+    return id + keyword(':=') + (aexp() | bexp()) ^ process
 
 
 def if_stmt():
@@ -54,8 +54,8 @@ def if_stmt():
             false_stmt = None
         return IfStatement(condition, true_stmt, false_stmt)
 
-    return keyword('if') + keyword('(') + bexp() + keyword(';') + (Lazy(stmt_list) |bexp() | aexp()) + Opt(
-        keyword(';') + (Lazy(stmt_list)| bexp() | aexp())) + keyword(')') ^ process
+    return keyword('if') + keyword('(') + bexp() + keyword(';') + Lazy(stmt_list) + Opt(
+        keyword(';') + Lazy(stmt_list)) + keyword(')') ^ process
 
 
 #Dates

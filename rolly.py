@@ -12,9 +12,8 @@ if __name__ == '__main__':
                 format := "YYYY/MM/DD":
                 a:= date(1999/12/27, format):
                 b:= date(1996/12/27, format):
-                
-                result := if (a = b; "True";y :='eqwewqeqwe':
-                                            x:=2)
+                w:= date(1999/12/27, format) - date(1996/12/27, format) :
+                result := if (a = b; "True"; 'False')
                 
                 """
 
@@ -69,10 +68,12 @@ if __name__ == '__main__':
                a := date(1999/12/27, "YYYY/MM/DD"):
                b :=  date(2018-12-27, "YYYY-MM-DD"):
                pedro := not( not (a < b or True)):
-               if(not(not(not ( a < b or True))); y:=1)
+               f:=3:
+               h:=5:
+               c := f+h
                """
 
-    tokens = rolly_lex(test_ast)
+    tokens = rolly_lex(test_bool)
     parse_result = rolly_parser(tokens)
     if not parse_result:
         print('Parse error!\n')

@@ -34,6 +34,7 @@ class AssignStatement(Statement):
     def eval(self, env):
         value = self.aexp.eval(env)
         env[self.name] = value
+        return self.name
 
 
 class CompoundStatement(Statement):
@@ -61,11 +62,11 @@ class IfStatement(Statement):
     def eval(self, env):
         condition_value = self.condition.eval(env)
         if condition_value:
-            self.true_stmt.eval(env)
+            result = self.true_stmt.eval(env)
         else:
             if self.false_stmt:
-                self.false_stmt.eval(env)
-
+                result= self.false_stmt.eval(env)
+        return env[result] if result in env else result
 
 class IntAexp(Aexp):
     def __init__(self, i):

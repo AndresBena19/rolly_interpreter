@@ -10,11 +10,12 @@ if __name__ == '__main__':
                 z := "1992/12/11":
                 
                 format := "YYYY/MM/DD":
-                a:= date(1999/12/27):
-                b:= date(1996/12/27):
+                a:= date(1999/12/27, format):
+                b:= date(1996/12/27, format):
                 
-                if (a = b; y:="True";y:='False'):
-                w := a - b
+                result := if (a = b; "True";y :='eqwewqeqwe':
+                                            x:=2)
+                
                 """
 
 
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 
 
     final = """ 
-            if(False; c:="True"; y:="False")
+            result := if(False; "True"; if(True; "TRUE LOVE"; "False"))
             """
 
     test_nested = """
@@ -71,7 +72,7 @@ if __name__ == '__main__':
                if(not(not(not ( a < b or True))); y:=1)
                """
 
-    tokens = rolly_lex(final)
+    tokens = rolly_lex(test_ast)
     parse_result = rolly_parser(tokens)
     if not parse_result:
         print('Parse error!\n')

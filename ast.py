@@ -1,6 +1,7 @@
 from __future__ import division
 from datetime import datetime
-from lexer import  *
+from lexer import *
+
 class Equality:
     def __eq__(self, other):
         return isinstance(other, self.__class__) and \
@@ -85,6 +86,11 @@ class DateAexp(Aexp):
         return 'DateAexp(%s)' % self.i
 
     def eval(self, env):
+        if self.format in env:
+            self.format = env[self.format]
+        if self.i in env:
+            self.i = env[self.i]
+
         return datetime.strptime(self.i, DATE_FORMATS_VALUES.get(self.format))
 
 
@@ -99,6 +105,16 @@ class FloatAexp():
     def eval(self, env):
         return self.i
 
+
+class BoolAexp():
+    def __init__(self, i):
+        self.i = i
+
+    def __repr__(self):
+        return ('BoolAexp(%d)' % self.i)
+
+    def eval(self, env):
+        return self.i
 
 class StringAexp():
     def __init__(self, b):

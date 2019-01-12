@@ -69,6 +69,7 @@ class Tree_Program:
                 new_cont = Aritmetic_Exp(ast, parent, self.cont).cont
             elif isinstance(ast, IfStatement):
                 new_cont = IfExp(ast, parent, self.cont).cont
+
             self.cont = new_cont
 
 
@@ -223,18 +224,20 @@ class Aritmetic_Exp:
                 self.built(ast.right, right)
             else:
                 self.cont = self.cont + 1
-                self.nodes.append(Node('Node({1}) \n {0}'.format(ast.__dict__, self.cont), parent=parent))
+
+                if isinstance(ast, NotBexp):
+                    new_cont = Relexp(ast.exp, parent, self.cont).cont
+                    self.cont = new_cont
+                else:
+                    self.cont = self.cont + 1
+                    self.nodes.append(Node('Node({1}) \n {0}'.format(ast.__dict__, self.cont), parent=parent))
         else:
             self.cont = self.cont + 1
-            self.nodes.append(Node('Node({1}) \n {0}'.format(ast.__dict__, self.cont), parent=parent))
+
+            if isinstance(ast, NotBexp):
+                new_cont = Relexp(ast.exp, parent, self.cont).cont
+                self.cont = new_cont
+            else:
+                self.cont = self.cont + 1
+                self.nodes.append(Node('Node({1}) \n {0}'.format(ast.__dict__, self.cont), parent=parent))
         return self.cont
-
-
-class NotExp:
-
-    def build(self, ast, parent=None, cont=None):
-        if isinstance(ast, NotBexp):
-            self.cont = cont + 1
-            Node_not = Node('Node{1}) \n {0}'.format(ast.__class__.__name__, self.cont), parent=parent)
-            relexp = Relexp(ast.exp, Node_not, self.cont)
-            self.cont = relexp.cont

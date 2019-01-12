@@ -1,7 +1,7 @@
 from lexer import *
 from combinators import *
 from ast import *
-from datetime import  datetime
+
 
 
 # Basic parsers
@@ -13,15 +13,9 @@ num_int = Tag(INT) ^ (lambda i: int(i))
 num_float = Tag(FLOAT) ^ (lambda d: float(d))
 string = Tag(STRING) ^ (lambda r: r.replace("'", '') if r[0] == "'" else r.replace('"', ''))
 date = Tag(DATE) ^ (lambda r: r.replace("'", '') if r[0] == "'" else r.replace('"', ''))
+boolean = Tag(BOOL) ^ (lambda r: BOOL_VALUES.get(r))
 id = Tag(ID)
 
-
-# def replace_date(date):
-#     date = date.replace('date(','')
-#     date = date.replace(')','')
-#     # date = date.replace('"','')
-#     # date = date.replace("'", '')
-#     return date
 
 # Top level parser
 def rolly_parser(tokens):
@@ -48,7 +42,7 @@ def assign_stmt():
         ((name, _), exp) = parsed
         return AssignStatement(name, exp)
 
-    return id + keyword(':=') + aexp() ^ process
+    return id + keyword(':=') + (bexp() | aexp()) ^ process
 
 
 def if_stmt():
@@ -68,8 +62,26 @@ def if_stmt():
 def date_field():
     def process(parsed):
         (((((_, _), date), _), format), _) = parsed
-        return DateAexp(date.i, format.b)
-    return keyword('date') + keyword('(') + (date ^ (lambda i: DateAexp(i))) + keyword(',') + (string ^ (lambda i: StringAexp(i))) + keyword(")") ^ process
+
+        if isinstance(date, VarAexp):
+            date = date.name
+        elif isinstance(date, StringAexp):
+            date = date.b
+        elif isinstance(date, DateAexp):
+            date = date.i
+
+        if isinstance(format, VarAexp):
+            format = format.name
+        elif isinstance(format, StringAexp):
+            format = format.b
+
+        return DateAexp(date, format)
+
+    return keyword('date') + keyword('(') + \
+           ((date ^ (lambda i: DateAexp(i))) | (string ^ (lambda i: StringAexp(i)))|(id ^ (lambda v: VarAexp(v)))) + \
+           keyword(',') + \
+           ((string ^ (lambda i: StringAexp(i))) | (id ^ (lambda v: VarAexp(v)))) + \
+           keyword(")") ^ process
 
 
 # Boolean expressions
@@ -82,7 +94,7 @@ def bexp_not():
 
 
 def bexp_term():
-    return bexp_not() | bexp_relop() | bexp_group()
+    return bexp_not() | bexp_relop() | bexp_group() | (boolean) ^ (lambda i: BoolAexp(i)) | (id ^ (lambda v: VarAexp(v)))
 
 
 def bexp_relop():
@@ -113,7 +125,8 @@ def aexp_value():
     return (num_int ^ (lambda i: IntAexp(i))) | \
            (num_float ^ (lambda y: FloatAexp(y))) | \
            (id ^ (lambda v: VarAexp(v))) | \
-           (string ^ (lambda i: StringAexp(i)))
+           (string ^ (lambda i: StringAexp(i))) | \
+           (boolean) ^ (lambda i: BoolAexp(i))
 
 
 # An IMP-specific combinator for binary operator expressions (aexp and bexp)

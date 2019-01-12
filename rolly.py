@@ -41,27 +41,45 @@ if __name__ == '__main__':
                     if(1.1 > 1 and  2=4;
                      y := 1;
                       if(3.0 >= 2 and 2=2; y := 'ssad'))
-                 """
+                  """
 
 
-    final = """
-            a:= date(1999/12/27, "YYYY/MM/DD"):
-            b:= date(27/12/2018, "DD/MM/YYYY"):
-            d := 3+2.4*1+6 + (3*3-2/(5*3)):
-            c := a-b:   
-            if( b>a; c:="True"; y:="False")
+    final = """ 
+            if(False; c:="True"; y:="False")
             """
+
+    test_nested = """
+                  f := ((a+b-a*(2/2)) = 2 or True) and True:
+                  if(not (f and False);
+                                      if(True;
+                                             if(False; 
+                                                    result:="WIN";
+                                             result:="NOT HERE"));
+                  result:="GAME OVER")
+                  """
+
+    test_date_t = """
+                  format := "DD/MM/YYYY":
+                  fecha := "8/12/1996":
+                  a:= date("8/12/1996", format)
+                  """
+
+    test_bool = """
+               a := date(1999/12/27, "YYYY/MM/DD"):
+               b :=  date(2018-12-27, "YYYY-MM-DD"):
+               pedro := not( not (a < b or True)):
+               if(not(not(not ( a < b or True))); y:=1)
+               """
+
     tokens = rolly_lex(final)
     parse_result = rolly_parser(tokens)
     if not parse_result:
         print('Parse error!\n')
         sys.exit(1)
-
     ast = parse_result.value
+    # Generate graph base on the ast
     ast_g = Tree_Program(ast)
-    #
-    #
-    #DotExporter(ast_g.root).to_dotfile("tree.dot")
+
     env = {}
     ast.eval(env)
 

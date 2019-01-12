@@ -5,10 +5,20 @@ DATE_FORMATS_VALUES = {
     'DD/MM/YYYY': '%d/%m/%Y',
     'MM/DD/YYYY': '%m/%d/%Y',
     'YYYY/MM/DD': '%Y/%m/%d',
+    'YYYY/DD/MM': '%Y/%d/%m',
+    'DD/YYYY/MM': '%d/%Y/%m',
+    'MM/YYYY/DD': '%m/%Y/%d',
     'DD-MM-YYYY': '%d-%m-%Y',
     'MM-DD-YYYY': '%m-%d-%Y',
-    'YYYY-MM-DD': '%Y-%m-%d'
+    'YYYY-MM-DD': '%Y-%m-%d',
+    'YYYY-DD-MM': '%Y-%d-%m',
+    'DD-YYYY-MM': '%d-%Y-%m',
+    'MM-YYYY-DD': '%m-%Y-%d'
+
 }
+
+BOOL_VALUES = {"True": True,
+               "False": False}
 
 RESERVED = 'RESERVED'
 INT = 'INT'
@@ -17,13 +27,17 @@ ID = 'ID'
 PUNTO = 'PUNTO'
 STRING = 'STRING'
 DATE = 'DATE'
+BOOL = 'BOOLEAN'
 
 token_exprs = [
     (r"[0-9]{2}\/[0-9]{2}\/[0-9]{4}", DATE),
     (r"[0-9]{4}\/[0-9]{2}\/[0-9]{2}", DATE),
+    (r"[0-9]{2}\/[0-9]{4}\/[0-9]{2}", DATE),
+
     (r"[0-9]{2}\-[0-9]{2}\-[0-9]{4}", DATE),
     (r"[0-9]{4}\-[0-9]{2}\-[0-9]{2}", DATE),
-    (r"[0-9]{4}\/[0-9]{2}\/[0-9]{2}", DATE),
+    (r"[0-9]{2}\-[0-9]{4}\-[0-9]{2}", DATE),
+
     (r'[ \n\t]+', None),
     (r'#[^\n]*', None),
     (r'\:=', RESERVED),
@@ -32,6 +46,8 @@ token_exprs = [
     (r';', RESERVED),
     (r'\+', RESERVED),
     (r'date', RESERVED),
+    (r'True', BOOL),
+    (r'False', BOOL),
     (r',', RESERVED),
     (r'-', RESERVED),
     (r'\*', RESERVED),

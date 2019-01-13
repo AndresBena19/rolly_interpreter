@@ -42,7 +42,7 @@ def assign_stmt():
         ((name, _), exp) = parsed
         return AssignStatement(name, exp)
 
-    return id + keyword(':=') + (aexp() | bexp() | if_stmt()) ^ process
+    return id + keyword(':=') + ( bexp() | aexp() |if_stmt()) ^ process
 
 
 def if_stmt():

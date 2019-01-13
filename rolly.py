@@ -7,6 +7,10 @@ from anytree.exporter import DotExporter
 
 if __name__ == '__main__':
 
+    test_date  = """
+                    A:= 2+1
+                """
+
     tokens = rolly_lex(test_date)
     parse_result = rolly_parser(tokens)
     if not parse_result:
